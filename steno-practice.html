@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shorthand Practice — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14181c;
+    --panel:#1e252b;
+    --panel-2:#242c33;
+    --paper:#ece7dc;
+    --paper-2:#e2dccb;
+    --accent:#c9a24b;
+    --accent-dim:#8a7137;
+    --good:#7fb88f;
+    --bad:#e1615a;
+    --text:#e7e3d8;
+    --muted:#9aa4ac;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ink);
+    color:var(--text);
+    font-family:'IBM Plex Sans',sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{font-family:'Special Elite',cursive; letter-spacing:.3px; margin:0 0 .4em 0;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  #app{max-width:980px;margin:0 auto;padding:28px 20px 60px;}
+
+  /* ticker tape signature strip */
+  .tapeband{
+    height:26px;
+    background:repeating-linear-gradient(90deg,var(--accent) 0 2px, transparent 2px 14px);
+    opacity:.55;
+    border-radius:4px;
+    margin-bottom:22px;
+  }
+
+  .screen{display:none;}
+  .screen.active{display:block; animation:fadein .25s ease;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  .back{
+    background:none;border:none;color:var(--muted);font-family:'IBM Plex Mono',monospace;
+    cursor:pointer;margin-bottom:16px;font-size:.9rem;padding:0;
+  }
+  .back:hover{color:var(--accent);}
+
+  .dash-card{
+    background:var(--panel);
+    border:1px solid #2c353d;
+    border-radius:var(--radius);
+    padding:32px 30px;
+  }
+  .dash-card h1{font-size:1.8rem;color:var(--accent);}
+  .dash-lines{margin:22px 0 30px;}
+  .dash-lines div{height:1px;background:#333d45;margin:16px 0;}
+
+  .btn-primary{
+    background:var(--accent);
+    color:#14181c;
+    border:none;
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:600;
+    padding:12px 22px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:.95rem;
+    transition:transform .12s ease, background .15s ease;
+  }
+  .btn-primary:hover{background:#dab35c; transform:translateY(-1px);}
+  .btn-primary:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+  .btn-secondary{
+    background:transparent;
+    color:var(--text);
+    border:1px solid #3a444d;
+    font-family:'IBM Plex Mono',monospace;
+    padding:11px 20px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:.9rem;
+  }
+  .btn-secondary:hover{border-color:var(--accent); color:var(--accent);}
+
+  .tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.7rem;
+    color:#14181c;
+    background:#00000022;
+    padding:2px 6px;
+    border-radius:4px;
+    margin-left:8px;
+  }
+
+  .lang-block{
+    background:var(--panel);
+    border:1px solid #2c353d;
+    border-radius:var(--radius);
+    padding:22px 24px;
+    margin-bottom:18px;
+  }
+  .lang-block h3{color:var(--text); font-size:1.1rem;}
+  .speed-row{display:flex; gap:12px; margin-top:14px;}
+  .speed-btn{
+    flex:1;
+    background:var(--panel-2);
+    border:1px solid #3a444d;
+    color:var(--text);
+    font-family:'IBM Plex Mono',monospace;
+    padding:14px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:.95rem;
+  }
+  .speed-btn:hover{border-color:var(--accent); color:var(--accent);}
+
+  .practice-grid{display:grid; grid-template-columns:230px 1fr; gap:20px; margin-top:10px;}
+  @media (max-width:680px){.practice-grid{grid-template-columns:1fr;}}
+
+  .audio-list{
+    background:var(--panel);
+    border:1px solid #2c353d;
+    border-radius:var(--radius);
+    padding:16px;
+    height:fit-content;
+  }
+  .audio-list h4{color:var(--muted); font-size:.85rem; text-transform:uppercase; letter-spacing:1px;}
+  #audio-list-ul{list-style:none; margin:12px 0 0; padding:0;}
+  #audio-list-ul li{
+    padding:10px 12px;
+    border-radius:6px;
+    cursor:pointer;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:.88rem;
+    color:var(--muted);
+    margin-bottom:4px;
+  }
+  #audio-list-ul li:hover{background:#2a333b;}
+  #audio-list-ul li.selected{background:var(--accent); color:#14181c; font-weight:600;}
+
+  .practice-main{display:flex; flex-direction:column; gap:16px;}
+  .hidden{display:none !important;}
+
+  .tape{
+    background:var(--panel);
+    border:1px solid #2c353d;
+    border-radius:var(--radius);
+    padding:16px 18px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  #current-audio-name{font-family:'IBM Plex Mono',monospace; color:var(--accent); font-size:.95rem;}
+  #play-status{font-family:'IBM Plex Mono',monospace; color:var(--muted); font-size:.85rem;}
+
+  .timer-row{
+    display:flex; justify-content:space-between; align-items:center;
+    background:var(--panel); border:1px solid #2c353d; border-radius:var(--radius); padding:14px 18px;
+  }
+  #timer-display{color:var(--accent); font-size:1.1rem;}
+
+  textarea#typing-area{
+    width:100%;
+    min-height:180px;
+    background:var(--paper);
+    color:#20242a;
+    border:1px solid var(--paper-2);
+    border-radius:var(--radius);
+    padding:16px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:1rem;
+    line-height:1.6;
+    resize:vertical;
+  }
+  textarea#typing-area:disabled{opacity:.6;}
+  textarea#typing-area:focus{outline:2px solid var(--accent);}
+
+  .result-stats{display:flex; gap:14px; flex-wrap:wrap; margin:18px 0 22px;}
+  .stat{
+    background:var(--panel); border:1px solid #2c353d; border-radius:var(--radius);
+    padding:14px 20px; min-width:120px;
+  }
+  .stat b{display:block; font-family:'IBM Plex Mono',monospace; font-size:1.4rem; color:var(--accent);}
+  .stat span{font-size:.78rem; color:var(--muted); text-transform:uppercase; letter-spacing:.5px;}
+
+  .result-analysis{
+    background:var(--paper);
+    color:#20242a;
+    border-radius:var(--radius);
+    padding:20px;
+    font-family:'IBM Plex Mono',monospace;
+    line-height:2;
+    font-size:.98rem;
+    margin-bottom:22px;
+  }
+  .w-correct{color:#1f7a4d; font-weight:600;}
+  .w-wrong{color:#b3261e; font-weight:600; text-decoration:underline wavy #b3261e;}
+  .w-missing{color:#8a8378; font-style:italic;}
+
+  .actions-row{display:flex; gap:12px; flex-wrap:wrap;}
+
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+  @media (prefers-reduced-motion:reduce){ .screen.active{animation:none;} }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="tapeband"></div>
+
+  <!-- SCREEN 1: DASHBOARD -->
+  <section id="screen-dashboard" class="screen active">
+    <a href="candidate.html" class="back" style="display:inline-block;">← Apna Typing Master Dashboard</a>
+    <div class="dash-card">
+      <h1>Dashboard</h1>
+      <div class="dash-lines"><div></div><div></div><div></div></div>
+      <button id="btn-open-shorthand" class="btn-primary">Shorthand <span class="tag">खोलें</span></button>
+    </div>
+  </section>
+
+  <!-- SCREEN 2: LANGUAGE + SPEED SELECT -->
+  <section id="screen-select" class="screen">
+    <button class="back" data-target="screen-dashboard">← Dashboard</button>
+    <h2>Shorthand चुनें</h2>
+
+    <div class="lang-block">
+      <h3>1. Hindi Shorthand</h3>
+      <div class="speed-row">
+        <button class="speed-btn" data-lang="hi" data-wpm="80">80 WPM</button>
+        <button class="speed-btn" data-lang="hi" data-wpm="100">100 WPM</button>
+      </div>
+    </div>
+
+    <div class="lang-block">
+      <h3>2. English Shorthand</h3>
+      <div class="speed-row">
+        <button class="speed-btn" data-lang="en" data-wpm="80">80 WPM</button>
+        <button class="speed-btn" data-lang="en" data-wpm="100">100 WPM</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN 3: AUDIO LIST + PLAYER + TYPING -->
+  <section id="screen-practice" class="screen">
+    <button class="back" data-target="screen-select">← Back</button>
+    <h2 id="practice-title">English Shorthand · 80 WPM</h2>
+
+    <div class="practice-grid">
+      <aside class="audio-list">
+        <h4>List of Audio</h4>
+        <ul id="audio-list-ul"></ul>
+      </aside>
+
+      <div class="practice-main">
+        <div id="current-audio-box" class="tape hidden">
+          <span id="current-audio-name">—</span>
+          <button id="btn-play" class="btn-secondary">▶ Play Audio</button>
+          <span id="play-status"></span>
+        </div>
+
+        <div id="typing-box" class="hidden">
+          <div class="timer-row">
+            <span class="mono">Time left: <b id="timer-display">00:00</b></span>
+            <button id="btn-start-type" class="btn-primary">Start Type</button>
+          </div>
+          <br>
+          <textarea id="typing-area" placeholder="ऑडियो पूरी सुनने के बाद यहाँ टाइप करना शुरू करें..." disabled></textarea>
+          <br><br>
+          <button id="btn-submit" class="btn-primary hidden">Submit</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCREEN 4: RESULT -->
+  <section id="screen-result" class="screen">
+    <h2>Result</h2>
+    <div class="result-stats">
+      <div class="stat"><b id="stat-accuracy">0%</b><span>Accuracy</span></div>
+      <div class="stat"><b id="stat-wpm">0</b><span>WPM Achieved</span></div>
+      <div class="stat"><b id="stat-words">0</b><span>Words Typed</span></div>
+      <div class="stat"><b id="stat-time">0s</b><span>Time Used</span></div>
+    </div>
+    <div id="result-text" class="result-analysis"></div>
+    <div class="actions-row">
+      <button id="btn-retry" class="btn-secondary">फिर कोशिश करें</button>
+      <button id="btn-next-level" class="btn-primary hidden">Next: 100 WPM →</button>
+      <button id="btn-home" class="btn-secondary">Dashboard</button>
+    </div>
+  </section>
+</div>
+
+<script src="firebase-config.js"></script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+  window.__stenoFirebaseData = {};
+  let resolveLoaded;
+  window.__stenoFirebaseLoaded = new Promise(res=>{ resolveLoaded = res; });
+
+  try{
+    const cfg = window.FIREBASE_CONFIG;
+    if(!cfg) throw new Error('firebase-config.js load nahi hua');
+    const app = initializeApp(cfg);
+    const db = getDatabase(app);
+    let firstLoad = true;
+    onValue(ref(db, 'stenoPassages'), (snap)=>{
+      window.__stenoFirebaseData = snap.exists() ? snap.val() : {};
+      if(firstLoad){ firstLoad = false; resolveLoaded(window.__stenoFirebaseData); }
+    }, ()=>{ if(firstLoad){ firstLoad = false; resolveLoaded({}); } });
+  } catch(e){
+    console.error('Steno Firebase load error:', e);
+    resolveLoaded({});
+  }
+</script>
+
+<script>
+/* ---------------- default fallback passage text (used only until admin uploads real content) ---------------- */
+// Real content (audio + matching text) is managed from the website's own Admin Panel
+// (🎙 Steno Audio tab) and lives in Firebase — so every visitor sees the same content.
+// These defaults are just a safety net for slots the admin hasn't filled in yet.
+const CATEGORIES = ['hi-80', 'hi-100', 'en-80', 'en-100'];
+
+const defaultPassages = {
+  'hi-80': [
+    { title: "पत्र 1 — कार्यालय सूचना", text: "सभी कर्मचारियों को सूचित किया जाता है कि अगले सोमवार से कार्यालय समय प्रातः नौ बजे से सायं छह बजे तक रहेगा। कृपया समय पर उपस्थित रहें।" },
+    { title: "पत्र 2 — ग्राहक अनुरोध", text: "आपके पत्र के लिए धन्यवाद। हमें खेद है कि आपका आदेश समय पर नहीं पहुंचा। हम शीघ्र ही नया माल भेज रहे हैं।" },
+    { title: "पत्र 3 — बैठक सूचना", text: "अगली बैठक शुक्रवार को दोपहर तीन बजे सभागार में आयोजित की जाएगी। सभी विभागों के प्रतिनिधि अपनी रिपोर्ट साथ लाएं।" },
+    { title: "पत्र 4 — आदेश स्वीकृति", text: "आपका आदेश प्राप्त हो गया है और उसे स्वीकृत कर दिया गया है। माल अगले सप्ताह के भीतर भेज दिया जाएगा।" },
+    { title: "पत्र 5 — छुट्टी आवेदन", text: "मैं अगले सोमवार से बुधवार तक व्यक्तिगत कारणों से अवकाश पर रहना चाहता हूं। कृपया मेरे आवेदन को स्वीकृत करें।" }
+  ],
+  'hi-100': [
+    { title: "पत्र 1 — कार्यालय सूचना (तेज़)", text: "सभी कर्मचारियों को सूचित किया जाता है कि अगले सोमवार से कार्यालय समय प्रातः नौ बजे से सायं छह बजे तक रहेगा। कृपया समय पर उपस्थित रहें और अपने विभाग प्रमुख को साप्ताहिक रिपोर्ट अवश्य सौंपें।" },
+    { title: "पत्र 2 — ग्राहक अनुरोध (तेज़)", text: "आपके पत्र के लिए धन्यवाद। हमें खेद है कि आपका आदेश समय पर नहीं पहुंचा। हम शीघ्र ही नया माल भेज रहे हैं और भविष्य में देरी न हो इसका पूरा ध्यान रखा जाएगा।" },
+    { title: "पत्र 3 — बैठक सूचना (तेज़)", text: "अगली बैठक शुक्रवार को दोपहर तीन बजे सभागार में आयोजित की जाएगी। सभी विभागों के प्रतिनिधियों से अनुरोध है कि वे अपनी मासिक प्रगति रिपोर्ट साथ लेकर आएं।" },
+    { title: "पत्र 4 — आदेश स्वीकृति (तेज़)", text: "आपका आदेश प्राप्त हो गया है और उसे स्वीकृत कर दिया गया है। माल अगले सप्ताह के भीतर आपके पते पर भेज दिया जाएगा। भुगतान की रसीद साथ संलग्न है।" },
+    { title: "पत्र 5 — छुट्टी आवेदन (तेज़)", text: "मैं अगले सोमवार से बुधवार तक व्यक्तिगत कारणों से अवकाश पर रहना चाहता हूं। कृपया मेरे आवेदन को स्वीकृत करें, मैं अपना कार्य समय से पहले पूरा कर दूंगा।" }
+  ],
+  'en-80': [
+    { title: "Letter 1 — Office Notice", text: "All staff members are informed that from next Monday, office hours will be from nine to six. Kindly report on time." },
+    { title: "Letter 2 — Customer Request", text: "Thank you for your letter. We regret that your order did not reach you on time. We are dispatching the fresh consignment." },
+    { title: "Letter 3 — Meeting Notice", text: "The next meeting will be held on Friday afternoon at three o'clock. All representatives should bring their reports." },
+    { title: "Letter 4 — Order Confirmation", text: "Your order has been received and confirmed. The goods will be dispatched within the next week." },
+    { title: "Letter 5 — Leave Application", text: "I would like to remain on leave from Monday to Wednesday due to personal reasons. Kindly approve my application." }
+  ],
+  'en-100': [
+    { title: "Letter 1 — Office Notice (fast)", text: "All staff members are informed that from next Monday, office hours will be from nine in the morning until six in the evening. Kindly report on time and submit your weekly report to your department head." },
+    { title: "Letter 2 — Customer Request (fast)", text: "Thank you for your letter. We regret that your order did not reach you on time. We are dispatching the fresh consignment immediately and will ensure such delays do not occur in future." },
+    { title: "Letter 3 — Meeting Notice (fast)", text: "The next meeting will be held on Friday afternoon at three o'clock in the main hall. All department representatives are requested to bring their monthly progress reports along with them." },
+    { title: "Letter 4 — Order Confirmation (fast)", text: "Your order has been received and duly confirmed. The goods will be dispatched to your address within the next week. A copy of the payment receipt is enclosed herewith for your records." },
+    { title: "Letter 5 — Leave Application (fast)", text: "I would like to remain on leave from next Monday to Wednesday due to personal reasons. Kindly approve my application, and I shall complete my pending work well before the deadline." }
+  ]
+};
+
+/* ---------------- state ---------------- */
+let state = {
+  lang: 'en',
+  wpm: 80,
+  selectedKey: null,   // Firebase push key (or 'default:N' for fallback samples) of the chosen passage
+  timeLimitSeconds: 0,
+  remainingSeconds: 0,
+  timerHandle: null,
+  typingStartedAt: null,
+  currentPassageText: ''
+};
+let currentList = [];   // the list of passages currently shown for this category
+
+function currentCategory(){ return `${state.lang}-${state.wpm}`; }
+
+/* ---------------- navigation ---------------- */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+document.querySelectorAll('[data-target]').forEach(btn=>{
+  btn.addEventListener('click', ()=> showScreen(btn.dataset.target));
+});
+document.getElementById('btn-open-shorthand').addEventListener('click', ()=> showScreen('screen-select'));
+document.getElementById('btn-home').addEventListener('click', ()=> showScreen('screen-dashboard'));
+
+/* ---------------- speed selection -> open practice screen ---------------- */
+document.querySelectorAll('.speed-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    state.lang = btn.dataset.lang;
+    state.wpm = parseInt(btn.dataset.wpm, 10);
+    openPractice();
+  });
+});
+
+async function openPractice(){
+  const langLabel = state.lang === 'hi' ? 'Hindi Shorthand' : 'English Shorthand';
+  document.getElementById('practice-title').textContent = `${langLabel} · ${state.wpm} WPM`;
+  const category = currentCategory();
+
+  await window.__stenoFirebaseLoaded; // wait for at least the first Firebase snapshot
+
+  const fbCat = (window.__stenoFirebaseData || {})[category] || {};
+  let list = Object.keys(fbCat)
+    .map((k, i)=>({
+      key: k,
+      title: (fbCat[k].title && fbCat[k].title.trim()) ? fbCat[k].title.trim() : ('Audio ' + (i + 1)),
+      text: fbCat[k].text || '',
+      audioURL: fbCat[k].audioURL || null,
+      createdAt: fbCat[k].createdAt || 0
+    }))
+    .sort((a, b)=> a.createdAt - b.createdAt);
+
+  // if admin hasn't added any real content yet for this category, show sample defaults
+  if(list.length === 0){
+    list = defaultPassages[category].map((p, i)=>({ key: 'default:' + i, title: p.title, text: p.text, audioURL: null }));
+  }
+  currentList = list;
+
+  const ul = document.getElementById('audio-list-ul');
+  ul.innerHTML = '';
+  list.forEach((entry, i)=>{
+    const li = document.createElement('li');
+    li.textContent = entry.title || ('Audio ' + (i + 1));
+    li.dataset.key = entry.key;
+    li.addEventListener('click', ()=> selectAudio(entry.key));
+    ul.appendChild(li);
+  });
+
+  // reset panels
+  document.getElementById('current-audio-box').classList.add('hidden');
+  document.getElementById('typing-box').classList.add('hidden');
+  state.selectedKey = null;
+  showScreen('screen-practice');
+}
+
+function selectAudio(key){
+  state.selectedKey = key;
+  document.querySelectorAll('#audio-list-ul li').forEach(li=>{
+    li.classList.toggle('selected', li.dataset.key === key);
+  });
+  const entry = currentList.find(e=> e.key === key);
+  document.getElementById('current-audio-name').textContent = entry ? entry.title : '—';
+  document.getElementById('play-status').textContent = '';
+  document.getElementById('current-audio-box').classList.remove('hidden');
+
+  // reset typing box for the newly chosen audio
+  document.getElementById('typing-box').classList.add('hidden');
+  const ta = document.getElementById('typing-area');
+  ta.value = '';
+  ta.disabled = true;
+  document.getElementById('btn-start-type').disabled = false;
+  document.getElementById('btn-submit').classList.add('hidden');
+  stopTimer();
+}
+
+/* ---------------- audio playback: Firebase-uploaded audio first, TTS as fallback ---------------- */
+document.getElementById('btn-play').addEventListener('click', playCurrentAudio);
+
+let currentAudioEl = null;
+
+async function playCurrentAudio(){
+  const status = document.getElementById('play-status');
+  if(!state.selectedKey){
+    status.textContent = 'पहले बाईं तरफ की List of Audio में से कोई audio चुनें।';
+    return;
+  }
+  const entry = currentList.find(e=> e.key === state.selectedKey);
+  if(!entry){ status.textContent = 'Passage नहीं मिला।'; return; }
+  const btn = document.getElementById('btn-play');
+
+  btn.disabled = true;
+  status.textContent = 'लोड हो रहा है...';
+
+  state.currentPassageText = entry.text;
+  document.getElementById('current-audio-name').textContent = entry.title;
+
+  if(currentAudioEl){ currentAudioEl.pause(); currentAudioEl = null; }
+
+  if(!entry.audioURL){
+    status.textContent = 'Admin ने अभी इस passage के लिए audio upload नहीं की — TTS से पढ़ा जा रहा है...';
+    speakWithTTS(state.currentPassageText, ()=>{
+      status.textContent = 'पूर्ण — अब टाइप करने के लिए तैयार हों।';
+      btn.disabled = false;
+      revealTypingBox();
+    });
+    return;
+  }
+
+  const audioEl = new Audio(entry.audioURL);
+  currentAudioEl = audioEl;
+  let fellBack = false;
+
+  audioEl.addEventListener('playing', ()=>{
+    status.textContent = 'चल रहा है...';
+  });
+  audioEl.addEventListener('ended', ()=>{
+    status.textContent = 'पूर्ण — अब टाइप करने के लिए तैयार हों।';
+    btn.disabled = false;
+    revealTypingBox();
+  });
+  audioEl.addEventListener('error', ()=>{
+    if(fellBack) return;
+    fellBack = true;
+    status.textContent = 'audio लोड नहीं हुआ — अस्थायी रूप से TTS से पढ़ा जा रहा है...';
+    speakWithTTS(state.currentPassageText, ()=>{
+      status.textContent = 'पूर्ण — अब टाइप करने के लिए तैयार हों।';
+      btn.disabled = false;
+      revealTypingBox();
+    });
+  });
+
+  audioEl.play().catch(()=> audioEl.dispatchEvent(new Event('error')));
+}
+
+function speakWithTTS(text, onDone){
+  if(!('speechSynthesis' in window)){ onDone(); return; }
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = state.lang === 'hi' ? 'hi-IN' : 'en-US';
+  utter.rate = Math.min(1.3, Math.max(0.6, state.wpm / 150));
+  utter.onend = onDone;
+  utter.onerror = onDone;
+  window.speechSynthesis.speak(utter);
+}
+
+/* ---------------- typing area + timer ---------------- */
+function revealTypingBox(){
+  const wordCount = state.currentPassageText.trim().split(/\s+/).length;
+  state.timeLimitSeconds = Math.max(20, Math.round((wordCount / state.wpm) * 60));
+  state.remainingSeconds = state.timeLimitSeconds;
+  updateTimerDisplay();
+  document.getElementById('typing-box').classList.remove('hidden');
+}
+
+document.getElementById('btn-start-type').addEventListener('click', ()=>{
+  const ta = document.getElementById('typing-area');
+  ta.disabled = false;
+  ta.value = '';
+  ta.focus();
+  document.getElementById('btn-start-type').disabled = true;
+  document.getElementById('btn-submit').classList.remove('hidden');
+  state.typingStartedAt = Date.now();
+  startTimer();
+});
+
+document.getElementById('btn-submit').addEventListener('click', ()=> finishTest(false));
+
+function startTimer(){
+  stopTimer();
+  state.timerHandle = setInterval(()=>{
+    state.remainingSeconds--;
+    updateTimerDisplay();
+    if(state.remainingSeconds <= 0){
+      finishTest(true);
+    }
+  }, 1000);
+}
+function stopTimer(){
+  if(state.timerHandle){ clearInterval(state.timerHandle); state.timerHandle = null; }
+}
+function updateTimerDisplay(){
+  const m = Math.floor(Math.max(0,state.remainingSeconds) / 60).toString().padStart(2,'0');
+  const s = Math.max(0,state.remainingSeconds % 60).toString().padStart(2,'0');
+  document.getElementById('timer-display').textContent = `${m}:${s}`;
+}
+
+/* ---------------- scoring + result screen ---------------- */
+function finishTest(timeUp){
+  stopTimer();
+  document.getElementById('typing-area').disabled = true;
+  document.getElementById('btn-submit').classList.add('hidden');
+
+  const originalWords = state.currentPassageText.trim().split(/\s+/);
+  const typedRaw = document.getElementById('typing-area').value.trim();
+  const typedWords = typedRaw.length ? typedRaw.split(/\s+/) : [];
+
+  const secondsUsed = timeUp ? state.timeLimitSeconds : Math.max(1, Math.round((Date.now() - state.typingStartedAt)/1000));
+
+  // build word-by-word comparison
+  const maxLen = Math.max(originalWords.length, typedWords.length);
+  let correctCount = 0;
+  let html = '';
+  const normalize = w => w.toLowerCase().replace(/[.,;:!?"'\u0964]/g,'');
+
+  for(let i=0;i<maxLen;i++){
+    const orig = originalWords[i];
+    const typed = typedWords[i];
+    if(orig === undefined){
+      html += `<span class="w-wrong">${typed}</span> `;
+    } else if(typed === undefined){
+      html += `<span class="w-missing">${orig}</span> `;
+    } else if(normalize(orig) === normalize(typed)){
+      correctCount++;
+      html += `<span class="w-correct">${orig}</span> `;
+    } else {
+      html += `<span class="w-wrong">${orig}</span> `;
+    }
+  }
+
+  const accuracy = Math.round((correctCount / originalWords.length) * 100);
+  const wpmAchieved = Math.round((typedWords.length / secondsUsed) * 60);
+
+  document.getElementById('stat-accuracy').textContent = `${accuracy}%`;
+  document.getElementById('stat-wpm').textContent = wpmAchieved;
+  document.getElementById('stat-words').textContent = typedWords.length;
+  document.getElementById('stat-time').textContent = `${secondsUsed}s`;
+  document.getElementById('result-text').innerHTML = html;
+
+  // offer next level (100 wpm) only right after completing 80 wpm
+  const nextBtn = document.getElementById('btn-next-level');
+  if(state.wpm === 80){
+    nextBtn.classList.remove('hidden');
+    nextBtn.textContent = 'Next: 100 WPM →';
+    nextBtn.onclick = ()=>{ state.wpm = 100; openPractice(); };
+  } else {
+    nextBtn.classList.add('hidden');
+  }
+
+  document.getElementById('btn-retry').onclick = ()=> openPractice();
+
+  showScreen('screen-result');
+}
+</script>
+<script src="anti-copy.js"></script>
+</body>
+</html>

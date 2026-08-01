@@ -1,767 +1,237 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>APNA TYPING MASTER</title>
-    <!-- Load Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Load Lucide Icons for aesthetic elements -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        /* Custom styles for professional look and feel */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f7f7f7;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        .main-content {
-            flex-grow: 1;
-            padding: 2rem 1rem;
-        }
-        .card-shadow {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .input-style {
-            padding: 0.75rem 1rem;
-            border: 1px solid #ccc;
-            border-radius: 0.5rem;
-            transition: border-color 0.2s;
-        }
-        .input-style:focus {
-            outline: none;
-            border-color: #3b82f6; /* blue-500 */
-        }
-        .modal-overlay {
-            background-color: rgba(0, 0, 0, 0.7);
-        }
-        /* Style for the typing passage area */
-        #passage-display {
-            line-height: 2;
-            font-size: 1.15rem;
-            min-height: 200px;
-            padding: 1rem;
-            border: 1px solid #e5e7eb;
-            background-color: #fff;
-            border-radius: 0.5rem;
-            overflow-y: auto; /* Enable scrolling for long passages */
-            font-family: 'Arial', sans-serif; /* Use a clean font for Devanagari/Hindi */
-        }
-        .current-word {
-            background-color: #fce7f3; /* Pink-100 highlight */
-            border-bottom: 2px solid #ec4899; /* Pink-500 border */
-            padding: 2px 4px;
-            border-radius: 4px;
-        }
-        .correct-char {
-            color: #10b981; /* Emerald-500 */
-            font-weight: 500;
-        }
-        .incorrect-char {
-            color: #ef4444; /* Red-500 */
-            background-color: #fee2e2; /* Red-100 background */
-            font-weight: 500;
-            border-radius: 2px;
-        }
-        .extra-char {
-            color: #ef4444;
-            background-color: #fecaca;
-        }
-        .cursor {
-            border-right: 2px solid #1f2937; /* Dark cursor */
-            animation: blink 0.8s infinite;
-        }
-        @keyframes blink {
-            0%, 100% { border-color: #1f2937; }
-            50% { border-color: transparent; }
-        }
-        /* Hide default scrollbar on the typing input */
-        #typing-input {
-            resize: none;
-        }
-
-        /* Desktop Layout - Side by Side (for typing screen) */
-        @media (min-width: 1024px) {
-            .typing-layout {
-                display: grid;
-                grid-template-columns: 1fr 1fr; /* 50/50 split */
-                gap: 2rem;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&family=Noto+Sans:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<title>Apna Typing Master Pro — India's #1 Typing Practice</title>
 </head>
-<body class="selection:bg-pink-300 selection:text-pink-900">
+<body>
 
-    <!-- Header -->
-    <header class="bg-white card-shadow sticky top-0 z-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
-            <!-- New Site Name -->
-            <a href="#" class="text-2xl font-extrabold text-blue-700">APNA TYPING MASTER</a>
-            <div class="flex items-center space-x-4">
-                <button id="profile-btn" class="text-gray-600 hover:text-blue-500 p-2 rounded-full transition duration-150">
-                    <i data-lucide="user"></i>
-                </button>
-            </div>
+<div id="landingPage">
+  <header class="lp-header">
+    <div class="logo" onclick="window.scrollTo(0,0)">
+      <div class="logo-icon">⌨</div>
+      Apna Typing <span>Master</span> Pro
+    </div>
+    <nav class="lp-nav">
+      <a href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Home</a>
+      <a href="speed-master.html" class="nav-speed-master">⚡ Speed Master</a>
+      <a href="#">Pricing</a>
+      <a href="#features">Features</a>
+      <div class="user-badge" id="userBadge">
+        <span class="user-dot"></span>
+        <span id="userNameDisplay">User</span>
+        <button class="btn-logout-lp" onclick="doLogout()">Logout</button>
+      </div>
+      <button class="lp-btn lp-btn-login" id="headerLoginBtn" onclick="openAuthModal('login')">Log In</button>
+      <button class="lp-btn lp-btn-start" id="headerStartBtn" onclick="openAuthModal('signup')">Get Started →</button>
+    </nav>
+  </header>
+
+  <!-- BG IMAGE WRAPPER: header ke baad se footer tak — image background mein -->
+  <div class="lp-bg-wrap">
+
+  <section class="hero">
+    <div class="badge">🏆 INDIA'S #1 TYPING PRACTICE PLATFORM</div>
+    <h1>Master Typing.<br>Pass Every <span class="highlight">Government Exam.</span></h1>
+    <p>Practice English & Hindi typing for SSC, RRB, High Court, UPSC and more. Real exam patterns, live timers, detailed reports.</p>
+    <div class="hero-buttons">
+      <button class="btn-primary-lp" onclick="openAuthModal('signup')">Start Free Practice →</button>
+      <button class="btn-secondary-lp" onclick="openAuthModal('login')">Log In</button>
+    </div>
+  </section>
+
+  <div class="lp-stats">
+    <div><div class="stat-num">2.4L+</div><div class="stat-label">Registered Users</div></div>
+    <div><div class="stat-num">500+</div><div class="stat-label">Practice Passages</div></div>
+    <div><div class="stat-num">18+</div><div class="stat-label">Exam Patterns</div></div>
+    <div><div class="stat-num">98%</div><div class="stat-label">Success Rate</div></div>
+  </div>
+
+  <section class="features" id="features">
+    <div class="features-title">Everything You Need to Qualify</div>
+    <div class="features-sub">Built specifically for Indian government exam aspirants</div>
+    <div class="feat-grid">
+      <div class="feat-card"><div class="feat-card-icon">📝</div><h3>Real Exam Passages</h3><p>Practice with passages from actual SSC CGL, RRB NTPC, High Court, and UPSC exams. 500+ exercises available.</p></div>
+      <div class="feat-card"><div class="feat-card-icon">🌐</div><h3>English & Hindi</h3><p>Full support for English typing and Hindi typing in KrutiDev, DevLys, and Mangal Unicode fonts.</p></div>
+      <div class="feat-card"><div class="feat-card-icon">📊</div><h3>Detailed Analysis</h3><p>Get WPM, accuracy, backspace count, net/gross speed — exactly the way your exam will calculate it.</p></div>
+      <div class="feat-card"><div class="feat-card-icon">🏆</div><h3>Exam Mode</h3><p>Simulate real exam conditions with strict timer, no corrections, and official evaluation criteria.</p></div>
+      <div class="feat-card"><div class="feat-card-icon">🔴</div><h3>Live Tests — Free!</h3><p>Participate in scheduled live typing tests with results & rankings. Free for all registered users.</p></div>
+      <div class="feat-card"><div class="feat-card-icon">📱</div><h3>Mobile Friendly</h3><p>Practice on any device. Sync progress seamlessly across all your devices.</p></div>
+      <div class="feat-card"><div class="feat-card-icon">⚡</div><h3>Speed Master</h3><p>Free-for-all typing booster — type random word passages, push your WPM, and climb the monthly leaderboard.</p></div>
+      <div class="feat-card"><div class="feat-card-icon">🎙</div><h3>Steno Dictation</h3><p>Listen to real dictation audio and type along — practice exactly like the actual steno exam.</p></div>
+      <div class="feat-card"><div class="feat-card-icon">🥇</div><h3>Monthly Leaderboard</h3><p>Top 50 fastest typists and most-active practicers ranked every month — fresh competition, every month.</p></div>
+    </div>
+  </section>
+
+  <footer class="lp-footer-new">
+    <div class="lp-footer-top">
+
+      <!-- Column 1: About Us -->
+      <div class="lf-col">
+        <div class="lf-logo">
+          <div class="lf-logo-icon">⌨</div>
+          <span>Apna Typing <b>Master</b> Pro</span>
         </div>
-    </header>
-
-    <!-- Main Content Container -->
-    <main class="main-content max-w-7xl mx-auto w-full">
-        
-        <!-- Screen 1: Passage Selection Screen -->
-        <div id="selection-screen" class="max-w-4xl mx-auto bg-white p-6 sm:p-10 rounded-xl card-shadow relative">
-
-            <!-- Aesthetic Shapes (From Video) -->
-            <div class="absolute top-0 right-0 w-24 h-24 bg-yellow-300 rounded-full opacity-50 transform translate-x-12 -translate-y-12"></div>
-            <div class="absolute bottom-0 left-0 w-32 h-32 bg-purple-600 rounded-full opacity-50 transform -translate-x-16 translate-y-16"></div>
-
-            <h1 class="text-xl font-semibold text-gray-700 mb-2">UPSSSC Assistants Hindi Typing Test</h1>
-            <h2 class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-8">Start Typing</h2>
-            
-            <p class="text-gray-600 mb-6">
-                कृपया विशेष पैसेज (कानूनी मामले, पिछली परीक्षाएँ आदि) या दैनिक पैसेज के लिए तिथि चुनकर आगे बढ़ें।
-            </p>
-
-            <!-- Special Passages Button -->
-            <button id="open-modal-btn" class="w-full sm:w-auto bg-teal-600 hover:bg-teal-700 text-white font-bold py-3 px-8 rounded-xl transition duration-300 transform hover:scale-[1.02] mb-10">
-                Click for Special Passages
-            </button>
-
-            <!-- OR Separator -->
-            <div class="flex items-center mb-6">
-                <div class="flex-grow border-t border-gray-300"></div>
-                <span class="flex-shrink mx-4 text-gray-500 font-semibold">या</span>
-                <div class="flex-grow border-t border-gray-300"></div>
-            </div>
-
-            <!-- Standard Passage Selection Form -->
-            <form id="typing-form" class="space-y-6">
-                
-                <!-- Select Language -->
-                <div>
-                    <label for="language" class="block text-sm font-medium text-gray-700 mb-2">भाषा चुनें</label>
-                    <select id="language" class="w-full input-style bg-white">
-                        <option value="">टाइपिंग भाषा चुनें</option>
-                        <option value="hindi-mangal" selected>Hindi - Mangal Inscript</option>
-                        <option value="hindi-krutidev">Hindi - Krutidev</option>
-                        <option value="english">English</option>
-                    </select>
-                </div>
-
-                <!-- Select Passage (Mock Dynamic List) -->
-                <div>
-                    <label for="passage" class="block text-sm font-medium text-gray-700 mb-2">टाइपिंग के लिए पैसेज चुनें</label>
-                    <select id="passage" class="w-full input-style bg-white">
-                        <option value="">पैसेज चुनें</option>
-                        <option value="1">भारतीय संस्कृति और समाज का बदलता स्वरूप</option>
-                        <option value="2">रामचरित्र मानस के कुछ अंश</option>
-                    </select>
-                </div>
-
-                <!-- Input Limit -->
-                <div>
-                    <label for="input-limit" class="block text-sm font-medium text-gray-700 mb-2">इनपुट सीमा (Keys)</label>
-                    <input type="number" id="input-limit" value="1250" class="w-full input-style" placeholder="Input Type: Characters">
-                    <p class="mt-1 text-xs text-gray-500">परीक्षा के लिए आवश्यक न्यूनतम कैरेक्टर सीमा</p>
-                </div>
-
-                <div class="pt-4">
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition duration-300 transform hover:scale-[1.01]">
-                        Next (आगे बढ़ें)
-                    </button>
-                </div>
-            </form>
-
+        <p class="lf-about-text">India ka sabse advanced typing practice platform — SSC, RRB, High Court, UPSSSC aur sabhi government exams ke liye. Real exam patterns, live timers, aur detailed performance reports ke saath apni typing speed badhayein aur har exam mein qualify karein.</p>
+        <div class="lf-social">
+          <a href="https://www.youtube.com/@ashulipikhindishorthand" target="_blank" class="lf-social-btn yt" title="YouTube">
+            <span>▶</span> YouTube
+          </a>
+          <a href="https://t.me/+nVoJSRLMmAY2MzU1" target="_blank" class="lf-social-btn tg" title="Telegram">
+            <span>✈</span> Telegram
+          </a>
+          <a href="mailto:apnatyping@gmail.com" class="lf-social-btn em" title="Email">
+            <span>✉</span> Email
+          </a>
         </div>
-        
-        <!-- Screen 2: Typing Interface Screen (Initially Hidden) -->
-        <div id="typing-screen" class="hidden w-full">
-            
-            <!-- Typing Stats Bar -->
-            <div class="bg-white p-4 rounded-xl card-shadow mb-6 flex justify-around items-center text-center">
-                <div class="p-2 border-r">
-                    <p class="text-sm font-medium text-gray-500">समय शेष (Time Left)</p>
-                    <p id="timer-display" class="text-2xl font-bold text-red-600">00:00</p>
-                </div>
-                <div class="p-2 border-r">
-                    <p class="text-sm font-medium text-gray-500">WPM (Net)</p>
-                    <p id="wpm-display" class="text-2xl font-bold text-green-600">0</p>
-                </div>
-                <div class="p-2 border-r">
-                    <p class="text-sm font-medium text-gray-500">गलतियाँ (Errors)</p>
-                    <p id="error-display" class="text-2xl font-bold text-yellow-600">0</p>
-                </div>
-                <div class="p-2">
-                    <p class="text-sm font-medium text-gray-500">प्रयास (Attempt)</p>
-                    <button id="restart-btn" class="text-blue-500 hover:text-blue-700 font-semibold flex items-center mt-1">
-                        <i data-lucide="rotate-ccw" class="w-4 h-4 mr-1"></i> Restart
-                    </button>
-                </div>
-            </div>
+      </div>
 
-            <!-- Side-by-Side Typing Layout (Desktop View) -->
-            <div class="typing-layout">
-                <!-- Left Side: Passage Display -->
-                <div class="bg-white p-6 rounded-xl card-shadow h-[400px] overflow-hidden flex flex-col">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">पैसेज (Passage) - <span id="passage-title"></span></h3>
-                    <div id="passage-display" class="flex-grow">
-                        <!-- Passage will be rendered here -->
-                    </div>
-                </div>
+      <!-- Column 2: Quick Links -->
+      <div class="lf-col">
+        <div class="lf-col-title">Quick Links</div>
+        <ul class="lf-links">
+          <li><a href="index.html">🏠 Home</a></li>
+          <li><a href="candidate.html">📋 Dashboard</a></li>
+          <li><a href="typing.html">⌨ Typing Test</a></li>
+          <li><a href="live-tests.html">🔴 Live Tests</a></li>
+          <li><a href="speed-master.html">⚡ Speed Master</a></li>
+          <li><a href="steno-practice.html">🎙 Steno Practice</a></li>
+        </ul>
+      </div>
 
-                <!-- Right Side: Input Area -->
-                <div class="bg-white p-6 rounded-xl card-shadow h-[400px] flex flex-col mt-6 lg:mt-0">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">आपकी टाइपिंग (Your Input)</h3>
-                    <textarea id="typing-input" class="w-full flex-grow p-4 input-style text-lg" placeholder="टाइपिंग शुरू करने के लिए यहाँ टाइप करें..." autofocus></textarea>
-                    
-                    <div class="mt-4 flex justify-between">
-                        <button id="end-test-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
-                            Test समाप्त करें
-                        </button>
-                        <p id="key-count" class="text-sm text-gray-600 self-end">Keys Typed: 0 / 1250</p>
-                    </div>
-                </div>
-            </div>
+      <!-- Column 3: Exam Coverage -->
+      <div class="lf-col">
+        <div class="lf-col-title">Exam Coverage</div>
+        <ul class="lf-links">
+          <li><a href="typing.html?rule=ssc_eng">📝 SSC CGL / CHSL</a></li>
+          <li><a href="typing.html?rule=rrb_eng">🚂 RRB NTPC</a></li>
+          <li><a href="typing.html?rule=upsssc_eng">🏛 UPSSSC</a></li>
+          <li><a href="typing.html?rule=ahc_eng">⚖ Allahabad High Court</a></li>
+          <li><a href="typing.html?lang=hindi">🇮🇳 Hindi Typing</a></li>
+          <li><a href="typing.html?lang=english">🌐 English Typing</a></li>
+        </ul>
+      </div>
 
-            <!-- Keyboard Layout Hint (Footer Area) -->
-            <div class="mt-8 text-center text-gray-600">
-                <p class="text-lg font-medium">कीबोर्ड लेआउट: <span id="layout-hint" class="font-bold text-blue-700">Mangal Inscript</span></p>
-                <p class="text-sm mt-2">टिप्स: जब आप एक शब्द पूरा कर लें तो `Space` दबाएँ।</p>
-            </div>
-            
-        </div>
+      <!-- Column 4: Contact & Info -->
+      <div class="lf-col">
+        <div class="lf-col-title">Contact Us</div>
+        <ul class="lf-links lf-contact">
+          <li>📧 <a href="mailto:apnatyping@gmail.com">apnatyping@gmail.com</a></li>
+          <li>📱 <a href="https://t.me/+nVoJSRLMmAY2MzU1" target="_blank">Telegram Channel</a></li>
+          <li>▶ <a href="https://www.youtube.com/@ashulipikhindishorthand" target="_blank">YouTube Channel</a></li>
+        </ul>
+        <div class="lf-col-title" style="margin-top:18px;">Support Hours</div>
+        <ul class="lf-links">
+          <li>🕐 Mon–Sat: 9 AM – 6 PM</li>
+          <li>📅 Sunday: Closed</li>
+        </ul>
+      </div>
 
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white mt-10 p-6 sm:p-10">
-        <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-sm">
-            <div>
-                <h3 class="text-lg font-bold mb-3">APNA TYPING MASTER</h3>
-                <p class="text-gray-400">Inspire Typing</p>
-            </div>
-            <div>
-                <h4 class="font-semibold mb-3">LINKS</h4>
-                <ul class="space-y-2 text-gray-400">
-                    <li><a href="#" class="hover:text-white">Home</a></li>
-                    <li><a href="#" class="hover:text-white">Exams</a></li>
-                    <li><a href="#" class="hover:text-white">Blog</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-semibold mb-3">LEGALS</h4>
-                <ul class="space-y-2 text-gray-400">
-                    <li><a href="#" class="hover:text-white">About us</a></li>
-                    <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
-                    <li><a href="#" class="hover:text-white">Terms of service</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-semibold mb-3">SOCIAL CONTACTS</h4>
-                <p class="text-gray-400">Follow us on social media.</p>
-            </div>
-        </div>
-        <div class="text-center pt-8 border-t border-gray-700 mt-8">
-            <p class="text-gray-500">Copyright © 2025 APNA TYPING MASTER</p>
-        </div>
-    </footer>
-
-    <!-- Special Passages Modal (Same as before, hidden) -->
-    <!-- ... (Modal HTML is omitted for brevity, it remains the same structure) ... -->
-    <div id="special-passage-modal" class="fixed inset-0 z-50 hidden flex items-start justify-center pt-10 modal-overlay">
-        <div class="bg-white w-11/12 sm:max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl card-shadow p-6 sm:p-8 relative">
-            
-            <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition">
-                <i data-lucide="x" class="w-6 h-6"></i>
-            </button>
-
-            <h3 class="text-2xl font-bold text-gray-900 mb-6 border-b pb-2">APNA TYPING MASTER Special Passage</h3>
-            <div class="space-y-5 mb-8">
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="modal-language" class="block text-sm font-medium text-gray-700 mb-1">भाषा चुनें</label>
-                        <select id="modal-language" class="w-full input-style bg-white">
-                            <option value="hindi-mangal" selected>Hindi - Mangal Inscript</option>
-                            <option value="hindi-krutidev">Hindi - Krutidev</option>
-                            <option value="english">English</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="search-passage" class="block text-sm font-medium text-gray-700 mb-1">अपने शब्द या कीवर्ड से खोजें</label>
-                        <input type="text" id="search-passage" placeholder="Enter your own word or select from below" class="w-full input-style">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">मुख्य शब्द (Keywords)</label>
-                    <div class="flex flex-wrap gap-2">
-                        <button type="button" class="tag-btn">Budget</button>
-                        <button type="button" class="tag-btn">Legal</button>
-                        <button type="button" class="tag-btn">Parliament</button>
-                        <button type="button" class="tag-btn">Vocab</button>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">कठिनाई स्तर (Difficulty Level)</label>
-                    <div class="flex flex-wrap gap-3">
-                        <button type="button" class="difficulty-btn bg-green-500 text-white">Basic</button>
-                        <button type="button" class="difficulty-btn bg-yellow-500 text-white">Easy</button>
-                    </div>
-                </div>
-
-                <div>
-                    <label for="modal-input-limit" class="block text-sm font-medium text-gray-700 mb-1">इनपुट सीमा (Keys)</label>
-                    <input type="number" id="modal-input-limit" value="1250" class="w-24 input-style" placeholder="1250">
-                </div>
-            </div>
-            
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">क्र.सं.</th>
-                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">पैसेज का नाम</th>
-                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">तिथि</th>
-                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">स्थिति</th>
-                            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">चुनें</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <tr class="hover:bg-blue-50">
-                            <td class="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">1</td>
-                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-700">भारतीय सांस्कृतिक पुनरुत्थान</td>
-                            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">29 Nov 2025</td>
-                            <td class="px-3 py-4 whitespace-nowrap text-sm text-green-600">Available</td>
-                            <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <button class="select-passage-btn text-blue-600 hover:text-blue-900 font-semibold">Select</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="flex justify-between items-center mt-6">
-                <button class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm hover:bg-gray-300">Previous</button>
-                <span class="text-sm text-gray-600">Page 1 of 5</span>
-                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">Next</button>
-            </div>
-        </div>
     </div>
 
+    <!-- Footer Bottom Bar -->
+    <div class="lf-bottom">
+      <div class="lf-copy">© 2026 Apna Typing Master Pro · Made with ❤️ for India's exam aspirants</div>
+      <div class="lf-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="about.html">About Us</a>
+        <a href="contact.html">Contact</a>
+        <!-- Admin link — bahut chhota, normal users dhyan nahi dete -->
+        <a href="admin.html" class="lf-admin-hidden" title="Admin">⚙</a>
+      </div>
+    </div>
+  </footer>
+  </div><!-- /lp-bg-wrap -->
+</div>
 
-    <script type="module">
-        // Firebase Imports
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, collection, getDocs, query, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        
-        // Lucide Icons Initialization
-        lucide.createIcons();
-        setLogLevel('Debug'); // Enable debug logging for Firebase
+<!-- =====================================================
+     AUTH MODAL
+     ===================================================== -->
+<div class="modal-overlay" id="authModal" onclick="handleAuthOverlay(event)">
+  <div class="modal-box-auth">
+    <button class="modal-close-btn" onclick="closeAuthModal()">✕</button>
+    <div class="modal-title" id="authTitle">Welcome Back 👋</div>
+    <div class="modal-sub" id="authSub">Apna account access karein</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Log In</button>
+      <button class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">Sign Up</button>
+    </div>
+    <div id="authLoginForm">
+      <div class="field"><label>Email</label><input type="text" id="authLoginEmail" placeholder="example@email.com"/></div>
+      <div class="field"><label>Password</label><div class="pwd-wrap"><input type="password" id="authLoginPass" placeholder="••••••••"/><button type="button" class="pwd-toggle" onclick="togglePwd('authLoginPass',this)">👁</button></div></div>
+      <div class="error-msg" id="authLoginErr">❌ Email aur password dono likhein.</div>
+      <button class="btn-submit-auth" onclick="doAuthLogin()">Log In →</button>
+      <div style="text-align:center;margin-top:12px;"><a href="#" onclick="openModalForgot();return false;" style="color:var(--accent);font-size:12px;text-decoration:none;font-weight:600;">Password bhool gaye?</a></div>
+    </div>
+    <!-- FORGOT PASSWORD FLOW (modal) -->
+    <div id="modalForgotForm" style="display:none;">
+      <div id="modalForgotStep1">
+        <div class="field"><label>Apna registered Email daalein</label><input type="email" id="modalForgotEmail" placeholder="example@email.com"/></div>
+        <div class="error-msg" id="modalForgotErr1"></div>
+        <button class="btn-submit-auth" onclick="sendModalForgotOTP()">OTP Bhejein →</button>
+      </div>
+      <div id="modalForgotStep2" style="display:none;">
+        <div class="modal-sub" style="margin-bottom:16px;">Email par bheja gaya 4-ank ka code daalein</div>
+        <div class="field"><label>OTP</label><input type="text" id="modalForgotOtp" maxlength="4" placeholder="0000" style="letter-spacing:6px;font-size:18px;text-align:center;"/></div>
+        <div class="field"><label>Naya Password</label><div class="pwd-wrap"><input type="password" id="modalForgotNewPass" placeholder="Min. 6 characters"/><button type="button" class="pwd-toggle" onclick="togglePwd('modalForgotNewPass',this)">👁</button></div></div>
+        <div class="error-msg" id="modalForgotErr2"></div>
+        <button class="btn-submit-auth" onclick="verifyModalForgotOTP()">Password Reset Karein →</button>
+        <div style="text-align:center;margin-top:12px;"><a href="#" onclick="sendModalForgotOTP();return false;" style="color:var(--muted);font-size:12px;text-decoration:none;">OTP dobara bhejein</a></div>
+      </div>
+      <div style="text-align:center;margin-top:14px;"><a href="#" onclick="closeModalForgot();return false;" style="color:var(--muted);font-size:12px;text-decoration:none;">← Log In par wapas</a></div>
+    </div>
+    <div id="authSignupForm" style="display:none;">
+      <div class="field"><label>Pura Naam</label><input type="text" id="authSignupName" placeholder="Aapka naam"/></div>
+      <div class="field"><label>Email Address</label><input type="email" id="authSignupEmail" placeholder="example@email.com"/></div>
+      <div class="field"><label>Password banayein</label><div class="pwd-wrap"><input type="password" id="authSignupPass" placeholder="Min. 6 characters"/><button type="button" class="pwd-toggle" onclick="togglePwd('authSignupPass',this)">👁</button></div></div>
+      <div class="field"><label>Preparing For</label>
+        <select id="authSignupExam">
+          <option>SSC CGL</option><option>SSC CHSL</option><option>RRB NTPC</option>
+          <option>High Court</option><option>UPSC</option><option>UPSSSC</option>
+          <option>Allahabad HC</option><option>KVS</option><option>State Exam</option>
+        </select>
+      </div>
+      <div class="error-msg" id="authSignupErr">❌ Sabhi fields bharna zaroori hai.</div>
+      <button class="btn-submit-auth" onclick="doAuthSignup()">Account Banayein →</button>
+    </div>
+  </div>
+</div>
 
-        // --- Firebase Configuration (MUST BE UPDATED FOR GITHUB PAGES) ---
-        // ⚠️ महत्वपूर्ण: डेटा सेविंग के लिए इन मानों को अपने Firebase प्रोजेक्ट की सेटिंग्स से बदलना होगा।
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY", 
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID", 
-            // अन्य सेटिंग्स यहाँ जोड़ी जा सकती हैं
-        };
-        const appIdentifier = "apna-typing-master"; 
+<script src="shared.js"></script>
+<script src="anti-copy.js"></script>
+<script src="app.js"></script>
+<script src="firebase-config.js"></script>
+<script type="module" src="firebase.js"></script>
+<script>
+loadSession();
 
-        let db, auth, userId = null;
-        let isAuthReady = false;
+function updateLPHeader(){
+  const badge=document.getElementById('userBadge');
+  const loginBtn=document.getElementById('headerLoginBtn');
+  const startBtn=document.getElementById('headerStartBtn');
+  if(APP.loggedIn){
+    if(badge)badge.classList.add('visible');
+    const nd=document.getElementById('userNameDisplay');if(nd)nd.textContent=APP.name;
+    if(loginBtn)loginBtn.style.display='none';
+    if(startBtn){startBtn.textContent='Dashboard →';startBtn.onclick=()=>window.location.href='candidate.html';}
+  }else{
+    if(badge)badge.classList.remove('visible');
+    if(loginBtn)loginBtn.style.display='';
+    if(startBtn){startBtn.textContent='Get Started →';startBtn.onclick=()=>openAuthModal('signup');}
+  }
+}
+updateLPHeader();
 
-        // --- Typing Test Variables ---
-        // Mock Passage Data
-        const passages = {
-            "1": {
-                title: "भारतीय संस्कृति और समाज का बदलता स्वरूप",
-                text: "भारतीय संस्कृति और समाज का स्वरूप आज तेजी से बदल रहा है। यह परिवर्तन भूमंडलीकरण, सूचना प्रौद्योगिकी और पश्चिमी विचारों के प्रभाव के कारण हो रहा है। युवा पीढ़ी नई तकनीकों को अपना रही है, लेकिन पारंपरिक मूल्यों को भी सहेजने की जिम्मेदारी बनी हुई है। सामाजिक न्याय और लैंगिक समानता जैसे मुद्दे अब खुले मंच पर चर्चा का विषय बन रहे हैं, जो एक स्वस्थ लोकतंत्र के लिए शुभ संकेत है।",
-            },
-            "2": {
-                title: "रामचरित्र मानस के कुछ अंश",
-                text: "मंगल भवन अमंगल हारी। द्रवहु सुदसरथ अजिर बिहारी॥ दिनकर कुल मंडन अति सोभा। जनु ससि करिनिहिं सरिस जोभा॥ भयउ भानु कुल कमल जुगल। मानुस तनु धरि सकल बिपुल॥",
-            }
-        };
-
-        let targetText = "";
-        let targetWords = [];
-        let typedInput = "";
-        let currentWordIndex = 0;
-        let charIndex = 0;
-        let errors = 0;
-        let keysTyped = 0;
-        let startTime = null;
-        let timerInterval = null;
-        const totalTimeSeconds = 600; // 10 minutes test
-
-        // --- DOM Elements ---
-        const selectionScreen = document.getElementById('selection-screen');
-        const typingScreen = document.getElementById('typing-screen');
-        const passageDisplay = document.getElementById('passage-display');
-        const typingInput = document.getElementById('typing-input');
-        const passageTitle = document.getElementById('passage-title');
-        const timerDisplay = document.getElementById('timer-display');
-        const wpmDisplay = document.getElementById('wpm-display');
-        const errorDisplay = document.getElementById('error-display');
-        const keyCountDisplay = document.getElementById('key-count');
-
-        // --- Page Navigation Logic ---
-        function showPage(pageName) {
-            selectionScreen.classList.add('hidden');
-            typingScreen.classList.add('hidden');
-            if (pageName === 'selection') {
-                selectionScreen.classList.remove('hidden');
-            } else if (pageName === 'typing') {
-                typingScreen.classList.remove('hidden');
-                typingInput.focus(); // Focus on the input when the screen opens
-            }
-        }
-
-        // --- Typing Logic ---
-        function startTest(selectedPassageId, language, keyLimit) {
-            targetText = passages[selectedPassageId].text;
-            targetWords = targetText.split(' ');
-            
-            // Reset state
-            typedInput = "";
-            currentWordIndex = 0;
-            charIndex = 0;
-            errors = 0;
-            keysTyped = 0;
-            startTime = null;
-            if (timerInterval) clearInterval(timerInterval);
-
-            // Update UI
-            passageTitle.textContent = passages[selectedPassageId].title;
-            keyCountDisplay.textContent = `Keys Typed: 0 / ${keyLimit}`;
-            errorDisplay.textContent = errors;
-            wpmDisplay.textContent = 0;
-            document.getElementById('layout-hint').textContent = language.includes('hindi') ? 'Hindi (Mangal/Krutidev)' : 'English';
-            
-            renderPassage();
-            typingInput.value = "";
-            showPage('typing');
-            
-            // Attach event listener for typing
-            typingInput.addEventListener('input', handleTyping);
-            typingInput.addEventListener('keydown', handleKeydown);
-            startTimer();
-        }
-
-        function renderPassage() {
-            passageDisplay.innerHTML = '';
-            targetWords.forEach((word, wordIdx) => {
-                const spanWord = document.createElement('span');
-                spanWord.className = 'word inline-block mr-2';
-                
-                // Add the word text
-                word.split('').forEach((char, charIdx) => {
-                    const spanChar = document.createElement('span');
-                    spanChar.textContent = char;
-                    spanWord.appendChild(spanChar);
-                });
-
-                // Add a space after every word except the last one
-                if (wordIdx < targetWords.length - 1) {
-                    const space = document.createElement('span');
-                    space.textContent = ' ';
-                    spanWord.appendChild(space);
-                }
-
-                passageDisplay.appendChild(spanWord);
-            });
-            
-            // Highlight the first word
-            updateCursorAndHighlight();
-        }
-
-        function updateCursorAndHighlight() {
-            const wordSpans = passageDisplay.querySelectorAll('.word');
-            
-            // 1. Reset highlights
-            wordSpans.forEach(span => span.classList.remove('current-word'));
-
-            // 2. Apply highlight to current word
-            if (currentWordIndex < wordSpans.length) {
-                const currentWordSpan = wordSpans[currentWordIndex];
-                currentWordSpan.classList.add('current-word');
-                
-                const charSpans = currentWordSpan.querySelectorAll('span');
-                
-                // 3. Update character colors and cursor
-                charSpans.forEach((span, idx) => {
-                    span.classList.remove('correct-char', 'incorrect-char', 'cursor');
-                    
-                    const targetChar = span.textContent;
-                    const typedChar = typedInput[idx];
-
-                    if (idx < typedInput.length) {
-                        if (typedChar === targetChar) {
-                            span.classList.add('correct-char');
-                        } else {
-                            span.classList.add('incorrect-char');
-                            // Error logic is handled in handleTyping, this is just visualization
-                        }
-                    } 
-                    
-                    // Place the cursor after the last typed character or at the beginning
-                    if (idx === typedInput.length && typedInput.length < targetWords[currentWordIndex].length) {
-                         span.classList.add('cursor');
-                    }
-                });
-
-                // Handle cursor when typing beyond the word length
-                if (typedInput.length >= targetWords[currentWordIndex].length) {
-                    const cursorElement = document.createElement('span');
-                    cursorElement.className = 'cursor';
-                    currentWordSpan.appendChild(cursorElement);
-                }
-
-                // Scroll the passage display to keep the current word visible
-                if (currentWordSpan) {
-                    const container = passageDisplay;
-                    const wordRect = currentWordSpan.getBoundingClientRect();
-                    const containerRect = container.getBoundingClientRect();
-
-                    if (wordRect.bottom > containerRect.bottom || wordRect.top < containerRect.top) {
-                         container.scrollTop += wordRect.top - containerRect.top - (containerRect.height / 3);
-                    }
-                }
-
-            } else {
-                // Test Finished
-                endTest();
-            }
-        }
-
-        function handleTyping(e) {
-            if (!startTime) startTime = new Date();
-            
-            typedInput = typingInput.value;
-            const currentTargetWord = targetWords[currentWordIndex];
-            
-            // Basic error counting (only counts mismatch at the end of a word)
-            let currentErrors = 0;
-            for (let i = 0; i < typedInput.length; i++) {
-                if (typedInput[i] !== currentTargetWord[i]) {
-                    currentErrors++;
-                }
-            }
-            errors = currentErrors; // Simple tracking: errors are the number of incorrect chars in the current word
-            errorDisplay.textContent = errors;
-            
-            keysTyped = e.target.value.length;
-            keyCountDisplay.textContent = `Keys Typed: ${keysTyped} / ${document.getElementById('input-limit').value || 1250}`;
-
-            updateCursorAndHighlight();
-            updateStats();
-        }
-
-        function handleKeydown(e) {
-             // Handle spacebar to move to the next word
-            if (e.key === ' ') {
-                e.preventDefault(); // Prevent adding the space to the textarea immediately
-                
-                const currentTargetWord = targetWords[currentWordIndex];
-                
-                // Only advance if a word was actually typed
-                if (typingInput.value.length > 0) {
-                    // Check if the typed word is a match (for a rough WPM calculation later)
-                    const isCorrect = currentTargetWord === typingInput.value;
-                    
-                    currentWordIndex++;
-                    typingInput.value = ''; // Clear input for the next word
-                    typedInput = '';
-                    
-                    if (currentWordIndex < targetWords.length) {
-                        updateCursorAndHighlight();
-                    } else {
-                        endTest();
-                    }
-                }
-            }
-        }
-
-        function startTimer() {
-            let timeLeft = totalTimeSeconds;
-            const updateTimer = () => {
-                const minutes = Math.floor(timeLeft / 60);
-                const seconds = timeLeft % 60;
-                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-                
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    endTest();
-                }
-                timeLeft--;
-            };
-
-            updateTimer();
-            timerInterval = setInterval(updateTimer, 1000);
-        }
-
-        function updateStats() {
-            if (!startTime) return;
-            const timeElapsed = (new Date() - startTime) / 60000; // time in minutes
-            
-            // Simple WPM calculation (Gross WPM)
-            const grossWPM = Math.round((keysTyped / 5) / timeElapsed); 
-            wpmDisplay.textContent = isFinite(grossWPM) ? Math.max(0, grossWPM) : 0;
-        }
-
-        function endTest() {
-            if (timerInterval) clearInterval(timerInterval);
-            typingInput.removeEventListener('input', handleTyping);
-            typingInput.removeEventListener('keydown', handleKeydown);
-            typingInput.disabled = true;
-
-            showToast("टेस्ट समाप्त! आपका स्कोर सेव किया जा रहा है...", 'success');
-            
-            // Final calculation and Save Data
-            const finalTime = totalTimeSeconds - parseInt(timerDisplay.textContent.split(':')[0]) * 60 - parseInt(timerDisplay.textContent.split(':')[1]);
-            const netWPM = Math.round(((keysTyped / 5) - errors) / (finalTime / 60));
-
-            // Mock Data Save
-            saveTypingResult({
-                grossWPM: parseInt(wpmDisplay.textContent),
-                netWPM: Math.max(0, netWPM),
-                totalErrors: errors, // simplified, should be accumulated errors
-                duration: finalTime,
-                language: document.getElementById('language').value,
-                passageTitle: passageTitle.textContent,
-            });
-        }
-
-
-        // --- Firebase Initialization and Data Saving ---
-
-        const initializeFirebase = async () => {
-            if (firebaseConfig.apiKey === "YOUR_API_KEY") {
-                showToast("⚠️ Firebase सेटिंग्स मिसिंग हैं। डेटा सेव नहीं होगा।", 'error');
-                return;
-            }
-
-            try {
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-                
-                onAuthStateChanged(auth, async (user) => {
-                    if (user) {
-                        userId = user.uid;
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                    isAuthReady = true;
-                    // fetchSavedPassages(); // Removed fetch for simplicity in this file
-                });
-
-            } catch (error) {
-                console.error("Firebase initialization failed:", error);
-                showToast("Firebase आरम्भ करने में त्रुटि।", 'error');
-            }
-        };
-
-        const saveTypingResult = async (result) => {
-            if (!isAuthReady || !userId || firebaseConfig.apiKey === "YOUR_API_KEY") {
-                showToast("डेटा सेव नहीं हो सका। Firebase कॉन्फ़िगरेशन या साइन-इन की जाँच करें।", 'error');
-                return;
-            }
-
-            const collectionPath = `apps/${appIdentifier}/users/${userId}/typing_results`;
-            
-            try {
-                const newDocRef = doc(collection(db, collectionPath));
-                await setDoc(newDocRef, {
-                    ...result,
-                    timestamp: new Date().toISOString(),
-                    userId: userId 
-                });
-                showToast("टेस्ट परिणाम सफलतापूर्वक सेव हो गया!", 'success');
-            } catch (error) {
-                console.error("Error saving typing result:", error);
-                showToast("डेटा सेव करते समय कोई एरर आ गई।", 'error');
-            }
-        };
-
-        // --- Event Listeners and Initial Setup ---
-        
-        // Form Submission
-        const typingForm = document.getElementById('typing-form');
-        typingForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const selectedPassageId = document.getElementById('passage').value;
-            const language = document.getElementById('language').value;
-            const keyLimit = document.getElementById('input-limit').value;
-            
-            if (!selectedPassageId) {
-                showToast("कृपया टाइपिंग के लिए एक पैसेज चुनें।", 'warning');
-                return;
-            }
-            
-            startTest(selectedPassageId, language, keyLimit);
-        });
-
-        // Restart Button
-        document.getElementById('restart-btn').addEventListener('click', () => {
-            // Re-start the test with current settings (using an existing passage ID for simplicity)
-            const selectedPassageId = document.getElementById('passage').value || "1";
-            const language = document.getElementById('language').value || "hindi-mangal";
-            const keyLimit = document.getElementById('input-limit').value || "1250";
-            typingInput.disabled = false;
-            startTest(selectedPassageId, language, keyLimit);
-            showToast("टेस्ट पुनरारंभ किया गया।", 'info');
-        });
-
-        // End Test Button (User forced end)
-        document.getElementById('end-test-btn').addEventListener('click', endTest);
-
-        // Modal Logic (Same as before)
-        const modal = document.getElementById('special-passage-modal');
-        document.getElementById('open-modal-btn').addEventListener('click', () => { modal.classList.remove('hidden'); });
-        document.getElementById('close-modal-btn').addEventListener('click', () => { modal.classList.add('hidden'); });
-        modal.addEventListener('click', (e) => { if (e.target === modal) { modal.classList.add('hidden'); } });
-
-        // --- Toast Utility (Alert Replacement) ---
-        function showToast(message, type = 'info') {
-            const body = document.body;
-            let messageBox = document.getElementById('message-box');
-            
-            let colorClass = 'bg-gray-700';
-            if (type === 'success') colorClass = 'bg-green-600';
-            else if (type === 'error') colorClass = 'bg-red-600';
-            else if (type === 'warning') colorClass = 'bg-yellow-600';
-            else if (type === 'info') colorClass = 'bg-blue-600';
-
-            if (!messageBox) {
-                messageBox = document.createElement('div');
-                messageBox.id = 'message-box';
-                messageBox.className = 'fixed top-4 left-1/2 -translate-x-1/2 text-white font-semibold text-sm p-3 rounded-lg shadow-xl z-50 transition-all duration-300 transform opacity-0 scale-95 whitespace-nowrap';
-                body.appendChild(messageBox);
-            }
-            
-            messageBox.className = messageBox.className.replace(/bg-[\w-]+/g, '').trim();
-            messageBox.classList.add(colorClass);
-            messageBox.textContent = message;
-            
-            messageBox.classList.remove('opacity-0', 'scale-95');
-            messageBox.classList.add('opacity-100', 'scale-100');
-
-            setTimeout(() => {
-                messageBox.classList.remove('opacity-100', 'scale-100');
-                messageBox.classList.add('opacity-0', 'scale-95');
-            }, 4000);
-        }
-
-        // Start the application
-        initializeFirebase();
-        showPage('selection'); // Default to selection screen
-
-    </script>
+function doLogout(){
+  APP.loggedIn=false;APP.isPro=false;APP.name='';APP.email='';
+  if(typeof window.fbSignOutAuth==='function') window.fbSignOutAuth();
+  saveSession();updateLPHeader();
+}
+function openAdminPage(){ window.location.href='admin.html'; }
+</script>
 </body>
 </html>
